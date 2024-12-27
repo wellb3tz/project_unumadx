@@ -5,7 +5,7 @@ from typing import Dict, List
 import random
 import uuid
 from .auth.validator import TelegramValidator
-from config import settings
+from settings import settings
 
 app = FastAPI()
 telegram_validator = TelegramValidator(settings.BOT_TOKEN)
