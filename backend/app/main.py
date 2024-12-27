@@ -1,11 +1,14 @@
 # backend/app/main.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Dict, List
 import random
 import uuid
+from .auth.validator import TelegramValidator
+from config import settings
 
 app = FastAPI()
+telegram_validator = TelegramValidator(settings.BOT_TOKEN)
 
 class Item(BaseModel):
     id: str
@@ -22,6 +25,11 @@ class World(BaseModel):
 # Item generation parameters
 RARITIES = ["Common", "Uncommon", "Rare", "Epic", "Legendary"]
 ATTRIBUTES = ["Power", "Defense", "Speed", "Luck"]
+
+
+@app.post("/auth/validate")
+async def validate_telegram_data(init_data: str):
+    return telegram_validator.validate_telegram_data(init_data)
 
 def generate_item() -> Item:
     rarity = random.choices(
