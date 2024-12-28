@@ -1,10 +1,11 @@
 // frontend/src/services/authService.js
-import { TelegramWebApp } from '@twa-dev/sdk';
+import WebApp from '@twa-dev/sdk';
 import axios from 'axios';
+import { CONFIG } from '../config';  // Add this import
 
 class AuthService {
   constructor() {
-    this.initData = TelegramWebApp.initData || '';
+    this.initData = WebApp.initData || '';
   }
 
   async validateUser() {
@@ -20,7 +21,7 @@ class AuthService {
   }
 
   getUserData() {
-    return TelegramWebApp.initDataUnsafe.user;
+    return WebApp.initDataUnsafe.user;
   }
 }
 
