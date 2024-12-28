@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # backend/app/main.py
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,7 +54,12 @@ Base.metadata.create_all(bind=engine)
 RARITIES = ["Common", "Uncommon", "Rare", "Epic", "Legendary"]
 ATTRIBUTES = ["Power", "Defense", "Speed", "Luck"]
 
-def generate_item() -> ItemBase:
+
+@app.post("/auth/validate")
+async def validate_telegram_data(init_data: str):
+    return telegram_validator.validate_telegram_data(init_data)
+
+def generate_item() -> Item:
     rarity = random.choices(
         RARITIES, 
         weights=[0.5, 0.25, 0.15, 0.08, 0.02]
@@ -141,25 +147,7 @@ async def generate_world(
         items=world_items
     )
 
-@app.post("/api/items/collect/{item_id}")
-async def collect_item(
-    item_id: str,
-    user_id: Optional[str] = Header(None),
-    db: Session = Depends(get_db)
-):
-    if not user_id:
-        raise HTTPException(status_code=400, detail="User ID is required")
-    
-    item = db.query(Item).filter(Item.id == item_id).first()
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    
-    user = db.query(User).filter(User.telegram_id == int(user_id)).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    item.owner_id = user.id
-    db.commit()
-    db.refresh(item)
-    
-    return item
+@app.post("/api/items/trade")
+async def trade_item(item_id: str, from_user: int, to_user: int):
+    # Implement trading logic
+    pass
